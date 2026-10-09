@@ -45,6 +45,7 @@ import io.debezium.connector.common.BaseSourceTask;
 import io.debezium.embedded.async.ConvertingAsyncEngineBuilderFactory;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.spi.OffsetCommitPolicy;
+import io.debezium.heartbeat.DebeziumHeartbeatFactory;
 import io.debezium.pipeline.notification.channels.HttpNotificationChannel;
 import io.debezium.pipeline.notification.channels.LogNotificationChannel;
 import io.debezium.pipeline.notification.channels.SinkNotificationChannel;
@@ -225,7 +226,8 @@ public class EngineProcessor {
                         SnapshotHandler.class,
                         QuarkusNotificationChannel.class,
                         QuarkusHeartbeatEmitter.class,
-                        QuarkusCustomConverters.class)
+                        QuarkusCustomConverters.class,
+                        ArcHeartbeatFactory.class)
                 .setUnremovable()
                 .build());
     }
@@ -316,7 +318,6 @@ public class EngineProcessor {
         resources.produce(new NativeImageResourceBuildItem("META-INF/services/org.apache.kafka.connect.source.SourceConnector"));
         resources.produce(new NativeImageResourceBuildItem("META-INF/services/io.debezium.pipeline.signal.channels.SignalChannelReader"));
         resources.produce(new NativeImageResourceBuildItem("META-INF/services/io.debezium.pipeline.notification.channels.NotificationChannel"));
-        resources.produce(new NativeImageResourceBuildItem("META-INF/services/io.debezium.heartbeat.DebeziumHeartbeatFactory"));
         resources.produce(new NativeImageResourceBuildItem("META-INF/services/io.debezium.service.spi.ServiceProviderContributor"));
     }
 
@@ -420,7 +421,6 @@ public class EngineProcessor {
                 DefaultQueueProvider.class,
                 QueueProviderService.class,
                 WhenNeededNoDataSnapshotter.class,
-                ArcHeartbeatFactory.class,
                 ArcServiceProviderContributor.class,
                 DebeziumEngine.BuilderFactory.class,
                 ConvertingAsyncEngineBuilderFactory.class,
@@ -673,7 +673,8 @@ public class EngineProcessor {
                 UnremovableBeanBuildItem.beanTypes(CapturingFilterStrategy.class),
                 UnremovableBeanBuildItem.beanTypes(TopicNamingStrategy.class),
                 UnremovableBeanBuildItem.beanTypes(PostProcessor.class),
-                UnremovableBeanBuildItem.beanTypes(CustomConverter.class));
+                UnremovableBeanBuildItem.beanTypes(CustomConverter.class),
+                UnremovableBeanBuildItem.beanTypes(DebeziumHeartbeatFactory.class));
     }
 
     private Optional<String> extractSourceConnector(Path path) {
