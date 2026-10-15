@@ -10,8 +10,8 @@ import io.debezium.config.Configuration;
 import io.debezium.service.spi.InstanceResolver;
 import io.debezium.service.spi.ServiceProvider;
 import io.debezium.service.spi.ServiceProviderContributor;
+import io.debezium.service.spi.ServiceProviderRegistrar;
 import io.debezium.service.spi.ServiceRegistry;
-import io.debezium.service.spi.ServiceRegistryBuilder;
 
 /**
  * Contributes the services based on Quarkus Arc to the Debezium service registry.
@@ -19,8 +19,8 @@ import io.debezium.service.spi.ServiceRegistryBuilder;
 public class ArcServiceProviderContributor implements ServiceProviderContributor {
 
     @Override
-    public void contribute(ServiceRegistryBuilder registryBuilder) {
-        registryBuilder.registerServiceProvider(new ArcInstanceResolverProvider());
+    public void contribute(ServiceProviderRegistrar registrar) {
+        registrar.registerServiceProvider(new ArcInstanceResolverProvider());
     }
 
     private static class ArcInstanceResolverProvider implements ServiceProvider<InstanceResolver> {
