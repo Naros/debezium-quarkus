@@ -133,6 +133,8 @@ public class ArcInstanceResolver implements InstanceResolver {
         ArcContainer container = Arc.container();
 
         if (container == null) {
+            LOGGER.warn("The Arc container is not available, no beans of type {} are resolved and Debezium creates the instances from the configuration",
+                    contract.getName());
             return List.of();
         }
 
